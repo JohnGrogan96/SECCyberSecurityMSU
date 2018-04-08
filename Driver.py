@@ -158,6 +158,38 @@ record.DataType = personalRecords
 record.ownerList.append(Bob)
 record.managerList.append(Alice)
 
+record2 = DataEntry.DataEntry()
+record2.sen = 6
+record2.imm = 4
+record2.name = "record2"
+record2.integrity = 6
+record2.protocol = None
+record2.ReviewTime = 0
+record2.freqAccess = 5
+record2.DataType = Jacks shit
+record2.ownerList.append(Bob)
+
+record3 = DataEntry.DataEntry()
+record3.sen = 1
+record3.imm = 1
+record3.name = "record3"
+record3.integrity = 7
+record3.protocol = None
+record3.ReviewTime = 0
+record3.freqAccess = 5
+record3.DataType = Jacks shit
+record3.ownerList.append(Bob)
+
+record4 = DataEntry.DataEntry()
+record4.sen = 4
+record4.imm = 6
+record4.name = "record4"
+record4.integrity = 4
+record4.protocol = None
+record4.ReviewTime = 199
+record4.freqAccess = 8
+record4.DataType = Jacks shit
+record4.ownerList.append(Eve)
 
 txnBuffer = []
 chain = []
