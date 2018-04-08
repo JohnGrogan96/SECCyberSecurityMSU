@@ -5,6 +5,8 @@ class Priviledge:
 	def __init__(self):
 		self.read = False
 		self.write = False
+		self.changeSecurityProperties = False
+		self.TypeOfData = None
 	
 	def checkForExistence(self):
 		throw NotImplementedError

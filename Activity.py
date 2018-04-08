@@ -10,4 +10,3 @@ class Activity:
 		self.dataTypeReadsPerHour = []
 		self.dataTypeWritesPerHour = []
 		self.dataTypeSecAttributesPerHour = []
-		
