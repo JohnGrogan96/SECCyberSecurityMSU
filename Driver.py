@@ -208,6 +208,8 @@ Eve.manager = Bob
 Eve.userActivity = EveAct
 Eve.dataTypeAccess.append(earningHistoryRecords)
 
+usernames = {"Alice":Alice, "Bob": Bob, "Eve": Eve}
+
 record = DataEntry.DataEntry()
 record.sen = 3
 record.imm = 9
@@ -252,6 +254,8 @@ record4.ReviewTime = 199
 record4.freqAccess = 8
 record4.DataType = earningHistoryRecords
 record4.ownerList.append(Eve)
+
+recordNames = {"record": record, "record2":record2, "record3":record3, "record4":record4}
 
 txnBuffer = []
 chain = []
@@ -298,5 +302,11 @@ print("Alice was naughty. She is suspended for", Alice.isSuspended, "minutes. Ha
 
 print("usage: Username (r/w) dataEntryName")
 print("output:Success/Failure(reason)")
-
-
+while True:
+	#msg = input("Give me teh inputz:")
+	msg = "Alice r record"
+	theRecord = recordNames[msg.split(" ")[2]]
+	user = usernames[msg.split(" ")[0]]
+	operation = msg.split(" ")[1]
+	print(isValidTxn([user, time.time(), theRecord, operation], state))
+	break
