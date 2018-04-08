@@ -30,19 +30,44 @@ def isValidTxn(txn, state):
 	txnUser = txn[0]
 	txnData = txn[2]
 	
-	if txnUser.isSuspended:
+	if txnUser.isSuspended != 0:
 		return False
 	if txnData.DataType in txnUser.SuspendedDataTypes:
 		return False
-		
-	if state[txnUser.name] > (1.4 * txnUser.userActivity.readsPerHour):
-		sendAlert(txnUser.name, txnData.name)
 	
-	if state[txnUser.name] > (1.6 * txnUser.userActivity.readsPerHour):
-		txnUser.isSuspended = True
-		return False
+	if txn[3] == "r":
+		for i in txnUser.userActivity.dataTypeReadsPerHour:
+			if i[0] is txnData.DataType:
+			
+				if state[txnUser.name][0] > (1.4 * i[1]):
+					sendAlert(txnUser.name, txnData.name)
+				if state[txnUser.name][0] > (1.6 * i[1]):
+					txnUser.isSuspended = pow(5, txnData.sen)
+					return False
+					
+				return True
+			
+			else:
+				return False
+				
+	else:
+		for i in txnUser.userActivity.dataTypeWritesPerHour:
+			if i[0] is txnData.DataType:
+			
+				if state[txnUser.name][1] > (1.4 * i[1]):
+					sendAlert(txnUser.name, txnData.name)
+				if state[txnUser.name][1] > (1.6 * i[1]):
+					txnUser.isSuspended = pow(5, txnData.sen)
+					return False
+					
+				return True
+			
+			else:
+				return False
+				
 	
-	return True
+	
+	return False
 	
 def makeBlock(txns,chain):
 
@@ -72,9 +97,15 @@ def makeBlock(txns,chain):
 def updateState(txn, state):
 	state = state.copy()
 	if txn[0].name in state.keys():
-		state[txn[0].name] += 1
+		if txn[3] == "r":
+			state[txn[0].name][0] += 1
+		else:
+			state[txn[0].name][1] += 1
 	else:
-		state[txn[0].name] = 1
+		if txn[3] == "r":
+			state[txn[0].name] = [1,0]
+		else:
+			state[txn[0].name] = [0,1]
 	return state
 
 Bob = User.User()
@@ -131,10 +162,13 @@ record.managerList.append(Alice)
 txnBuffer = []
 chain = []
 
-state = {"Alice":0}
+state = {"Alice":[0,0]}
 
-for i in range(0, 20):
+for i in range(0, 10):
 	txnBuffer.append( [ Alice, time.time(), record, "r"])
+	
+for i in range(0, 20):
+	txnBuffer.append( [ Alice, time.time(), record, "w"])
 
 
 blockSizeLimit = 5  # Arbitrary number of transactions per block- 
@@ -163,3 +197,5 @@ while len(txnBuffer) > 0:
 
 for item in chain:
 	print(item)
+	
+print("Alice was naughty. She is suspended for", Alice.isSuspended, "minutes. Ha.")

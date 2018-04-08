@@ -10,5 +10,5 @@ class User:
 		self.groups = []
 		self.dataTypeAccess = []
 		self.SuspendedDataTypes = []
-		self.isSuspended = False
+		self.isSuspended = 0
 
