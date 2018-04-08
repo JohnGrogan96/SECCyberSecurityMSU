@@ -9,7 +9,7 @@ class Priviledge:
 		self.TypeOfData = None
 	
 	def checkForExistence(self):
-		throw NotImplementedError
+		return None
 		
 	def changeDataPriviledge(self):
-		throw NotImplementedError
+		return None
