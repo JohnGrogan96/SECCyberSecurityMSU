@@ -31,13 +31,16 @@ def isValidTxn(txn, state):
 	txnData = txn[2]
 	
 	if txnUser.isSuspended != 0:
+		print("YOU ARE SUSPENDED")
 		return False
 	if txnData.DataType in txnUser.SuspendedDataTypes:
+		print("YOU ARE SUSPENDED FROM THIS DATATYPE")
 		return False
 	
 	if txn[3] == "r":
 		for j in txnUser.privList:
 			if j.read == False:
+				print("YOU CAN'T READ THIS")
 				return False
 		for i in txnUser.userActivity.dataTypeReadsPerHour:
 			if i[0] is txnData.DataType:
@@ -46,16 +49,19 @@ def isValidTxn(txn, state):
 					sendAlert(txnUser.name, txnData.name)
 				if state[txnUser.name][0] > (1.6 * i[1]):
 					txnUser.isSuspended = pow(5, txnData.sen)
+					print("YOU'VE READ THIS DATA TOO MUCH")
 					return False
 					
 				return True
 			
 			else:
+				print("YOU DON'T HAVE ACCESS TO THIS DATATYPE")
 				return False
 				
 	else:
 		for j in txnUser.privList:
 			if j.write == False:
+				print("YOU CAN'T WRITE TO THIS")
 				return False
 		for i in txnUser.userActivity.dataTypeWritesPerHour:
 			if i[0] is txnData.DataType:
@@ -64,15 +70,17 @@ def isValidTxn(txn, state):
 					sendAlert(txnUser.name, txnData.name)
 				if state[txnUser.name][1] > (1.6 * i[1]):
 					txnUser.isSuspended = pow(5, txnData.sen)
+					print("YOU'VE WRITTEN TO THIS DATA TOO MUCH")
 					return False
 					
 				return True
 			
 			else:
+				print("YOU DON'T HAVE ACCESS TO THIS DATATYPE")
 				return False
 				
 	
-	
+	print("NOT SURE WHY YOU DON'T HAVE ACCESS")
 	return False
 	
 def makeBlock(txns,chain):
@@ -272,7 +280,7 @@ for i in range(0, 10):
 blockSizeLimit = 5  # Arbitrary number of transactions per block- 
                #  this is chosen by the block miner, and can vary between blocks!
 
-while len(txnBuffer) > 0:
+'''while len(txnBuffer) > 0:
     bufferStartSize = len(txnBuffer)
     
     ## Gather a set of valid transactions for inclusion
@@ -294,19 +302,39 @@ while len(txnBuffer) > 0:
     chain.append(myBlock)    
 
 for item in chain:
-	print(item)
+	print(item)'''
 	
-print("Alice was naughty. She is suspended for", Alice.isSuspended, "minutes. Ha.")
+#print("Alice was naughty. She is suspended for", Alice.isSuspended, "minutes. Ha.")
 
 #interface start
 
+txnList = []
+
 print("usage: Username (r/w) dataEntryName")
 print("output:Success/Failure(reason)")
-while True:
-	#msg = input("Give me teh inputz:")
-	msg = "Alice r record"
+cont = True
+while cont:
+	msg = input("Give me teh inputz:")
+	if msg == "":
+		continue
+	if msg == "quit":
+		cont = False
+		break
+	#msg = "Alice r record"
 	theRecord = recordNames[msg.split(" ")[2]]
 	user = usernames[msg.split(" ")[0]]
 	operation = msg.split(" ")[1]
-	print(isValidTxn([user, time.time(), theRecord, operation], state))
-	break
+	#print(isValidTxn([user, time.time(), theRecord, operation], state))
+	thisTxn = [user, time.time(), theRecord, operation]
+	validTxn = isValidTxn(thisTxn, state)
+	if validTxn:
+		txnList.append(thisTxn)
+		state = updateState(thisTxn, state)
+	else:
+		continue
+	
+	if len(txnList) == blockSizeLimit:
+		block = makeBlock(txnList, chain)
+		chain.append(block)
+		txnList = []
+		
