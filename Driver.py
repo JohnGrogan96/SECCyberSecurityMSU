@@ -256,7 +256,7 @@ record4.ownerList.append(Eve)
 txnBuffer = []
 chain = []
 
-state = {"Alice":[0,0]}
+state = {"Alice":[0,0], "Bob":[0,0], "Eve":[0,0]}
 
 for i in range(0, 20):
 	txnBuffer.append( [ Alice, time.time(), record, "r"])
