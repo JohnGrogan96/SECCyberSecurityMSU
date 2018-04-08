@@ -175,6 +175,10 @@ Bob = User.User()
 Bob.email = "iambob@domain.com"
 Bob.phoneNumber = "2222222222"
 Bob.name = "Bob"
+Bob.privList.append(BobPersonalRecPrivs
+Bob.privList.append(BobEHRPrivs)
+
+
 
 
 Eve = User.User()
