@@ -7,6 +7,7 @@ import DataType
 Bob = User()
 Bob.ID = 123
 
+
 personalRecords = DataType()
 personalRecords.name = "Personal Records"
 personalRecords.sensitivity = 7
@@ -41,3 +42,12 @@ Alice.userActivity =  AliceAct
 Alice.dataTypeAccess.append(personalRecords)
 
 
+DataEntry record
+record.sen = 3
+record.imm = 9
+record.integrity = 9
+record.protocol = None
+record.ReviewTime = 100
+record.freqAccess = 9
+record.ownerList.append(Bob)
+record.managerList.append(Alice)
