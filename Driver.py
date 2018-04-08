@@ -36,6 +36,9 @@ def isValidTxn(txn, state):
 		return False
 	
 	if txn[3] == "r":
+		for j in txnUser.privList:
+			if j.read == False:
+				return False
 		for i in txnUser.userActivity.dataTypeReadsPerHour:
 			if i[0] is txnData.DataType:
 			
@@ -51,6 +54,9 @@ def isValidTxn(txn, state):
 				return False
 				
 	else:
+		for j in txnUser.privList:
+			if j.write == False:
+				return False
 		for i in txnUser.userActivity.dataTypeWritesPerHour:
 			if i[0] is txnData.DataType:
 			
@@ -128,7 +134,7 @@ earningHistoryRecords.Immutability = 9
 
 AlicePrivs = Privs.Priviledge()
 AlicePrivs.read = True
-Alice.Privs.write = True
+AlicePrivs.write = True
 AlicePrivs.TypeOfData = personalRecords
 
 AliceAct = Activity.Activity()
@@ -148,8 +154,6 @@ Alice.email = "Someemail@domain.com"
 Alice.phoneNumber = "1111111111"
 Alice.name = "Alice"
 Alice.privList.append(AlicePrivs)
-Alice.ID = 12
-Alice.managerID = 123
 Alice.userActivity =  AliceAct
 Alice.dataTypeAccess.append(personalRecords)
 
@@ -166,19 +170,43 @@ BobEHRPrivs.TypeOfData = earningHistoryRecords
 BobAct = Activity.Activity()
 BobAct.sensitivityAccesses = 10
 
-BobAct.dataTypeAccessesPerHour.append([personalRecords, 5], [earningHistoryRecords, 100])
-BobAct.dataTypeReadsPerHour.append([personalRecords, 2],[earningHistoryRecords, 100])
+BobAct.dataTypeAccessesPerHour.append([personalRecords, 5])
+BobAct.dataTypeAccessesPerHour.append([earningHistoryRecords, 100])
+BobAct.dataTypeReadsPerHour.append([personalRecords, 2])
+BobAct.dataTypeReadsPerHour.append([earningHistoryRecords, 100])
 BobAct.dataTypeWritesPerHour.append([personalRecords, 3])
-BobAct.dataTypeSecAttributesPerHour.append([personalRecords, 10])
 
 Bob = User.User()
 Bob.email = "iambob@domain.com"
 Bob.phoneNumber = "2222222222"
 Bob.name = "Bob"
+Bob.privList.append(BobPersonalRecPrivs)
+Bob.privList.append(BobEHRPrivs)
+Bob.manager = Alice
+Bob.userActivity = BobAct
+Bob.dataTypeAccess.append(personalRecords)
+Bob.dataTypeAccess.append(earningHistoryRecords)
 
+EvePrivs = Privs.Priviledge()
+EvePrivs.read = True
+EvePrivs.write = False
+EvePrivs.TypeOfData = earningHistoryRecords
+
+EveAct = Activity.Activity()
+EveAct.sensitivityAccesses = 10
+
+EveAct.dataTypeAccessesPerHour.append([earningHistoryRecords, 10])
+EveAct.dataTypeReadsPerHour.append([earningHistoryRecords, 10])
+EveAct.dataTypeWritesPerHour.append([earningHistoryRecords, 0])
 
 Eve = User.User()
-
+Eve.email = "iamnoteve@domain.com"
+Eve.phoneNumber = "3333333333"
+Eve.name = "Eve"
+Eve.privList.append(EvePrivs)
+Eve.manager = Bob
+Eve.userActivity = EveAct
+Eve.dataTypeAccess.append(earningHistoryRecords)
 
 record = DataEntry.DataEntry()
 record.sen = 3
@@ -200,7 +228,7 @@ record2.integrity = 6
 record2.protocol = None
 record2.ReviewTime = 0
 record2.freqAccess = 5
-record2.DataType = Jacks shit
+record2.DataType = earningHistoryRecords
 record2.ownerList.append(Bob)
 
 record3 = DataEntry.DataEntry()
@@ -211,7 +239,7 @@ record3.integrity = 7
 record3.protocol = None
 record3.ReviewTime = 0
 record3.freqAccess = 5
-record3.DataType = Jacks shit
+record3.DataType = earningHistoryRecords
 record3.ownerList.append(Bob)
 
 record4 = DataEntry.DataEntry()
@@ -222,7 +250,7 @@ record4.integrity = 4
 record4.protocol = None
 record4.ReviewTime = 199
 record4.freqAccess = 8
-record4.DataType = Jacks shit
+record4.DataType = earningHistoryRecords
 record4.ownerList.append(Eve)
 
 txnBuffer = []
@@ -230,10 +258,10 @@ chain = []
 
 state = {"Alice":[0,0]}
 
-for i in range(0, 10):
+for i in range(0, 20):
 	txnBuffer.append( [ Alice, time.time(), record, "r"])
 	
-for i in range(0, 20):
+for i in range(0, 10):
 	txnBuffer.append( [ Alice, time.time(), record, "w"])
 
 
