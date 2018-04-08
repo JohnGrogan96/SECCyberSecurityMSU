@@ -119,9 +119,17 @@ personalRecords.frequencyOfAccess = 10
 personalRecords.reviewTime = 4000
 personalRecords.Immutability = 8
 
+earningHistoryRecords = DataType.DataTypes()
+earningHistoryRecords.name = "Earning History Records"
+earningHistoryRecords.sensitivity = 2
+earningHistoryRecords.frequencyOfAccess = 100
+earningHistoryRecords.reviewTime = -1 #ie. Never goes away
+earningHistoryRecords.Immutability = 9
+
 AlicePrivs = Privs.Priviledge()
 AlicePrivs.read = True
-AlicePrivs.TypeOfData = "Personal Records"
+Alice.Privs.write = True
+AlicePrivs.TypeOfData = personalRecords
 
 AliceAct = Activity.Activity()
 AliceAct.sensitivityAccesses = 10
@@ -144,6 +152,32 @@ Alice.ID = 12
 Alice.managerID = 123
 Alice.userActivity =  AliceAct
 Alice.dataTypeAccess.append(personalRecords)
+
+BobPersonalRecPrivs = Privs.Priviledge()
+BobPersonalRecPrivs.read = True
+BobPersonalRecPrivs.write = True
+BobPersonalRecPrivs.TypeOfData = personalRecords
+
+BobEHRPrivs = Privs.Priviledge()
+BobEHRPrivs.read = True
+BobEHRPrivs.write = False
+BobEHRPrivs.TypeOfData = earningHistoryRecords
+
+BobAct = Activity.Activity()
+BobAct.sensitivityAccesses = 10
+
+BobAct.dataTypeAccessesPerHour.append([personalRecords, 5], [earningHistoryRecords, 100])
+BobAct.dataTypeReadsPerHour.append([personalRecords, 2],[earningHistoryRecords, 100])
+BobAct.dataTypeWritesPerHour.append([personalRecords, 3])
+BobAct.dataTypeSecAttributesPerHour.append([personalRecords, 10])
+
+Bob = User.User()
+Bob.email = "iambob@domain.com"
+Bob.phoneNumber = "2222222222"
+Bob.name = "Bob"
+
+
+Eve = User.User()
 
 
 record = DataEntry.DataEntry()
