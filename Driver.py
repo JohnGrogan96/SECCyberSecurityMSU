@@ -265,3 +265,10 @@ for item in chain:
 	print(item)
 	
 print("Alice was naughty. She is suspended for", Alice.isSuspended, "minutes. Ha.")
+
+#interface start
+
+print("usage: Username (r/w) dataEntryName")
+print("output:Success/Failure(reason)")
+
+
