@@ -23,7 +23,7 @@ def hashMe(msg=""):
         return hashlib.sha256(str(msg).encode('utf-8')).hexdigest()
 		
 def sendAlert(user, entry):
-	print("ALERT: USER", user, "IS ACCESSING", entry, "WAY TOO FUCKING MUCH")
+	print("ALERT: USER", user, "IS ACCESSING", entry, "TOO MUCH")
 
 def isValidTxn(txn, state):
 
@@ -50,6 +50,7 @@ def isValidTxn(txn, state):
 				if state[txnUser.name][0] > (1.6 * i[1]):
 					txnUser.isSuspended = pow(5, txnData.sen)
 					print("YOU'VE READ THIS DATA TOO MUCH")
+					print("Suspension is: ", txnUser.isSuspended, " minutes")
 					return False
 					
 				return True
@@ -60,6 +61,7 @@ def isValidTxn(txn, state):
 				
 	else:
 		for j in txnUser.privList:
+			#print("ding")
 			if j.write == False:
 				print("YOU CAN'T WRITE TO THIS")
 				return False
@@ -73,6 +75,10 @@ def isValidTxn(txn, state):
 					print("YOU'VE WRITTEN TO THIS DATA TOO MUCH")
 					return False
 					
+				if txnData.sen * txnData.imm * txnData.integrity > 50:
+					print("Stakeholders notified, code = ", txnData.sen * txnData.imm * txnData.integrity)
+					for stakes in txnData.stakeHolderList:
+						print(stakes.name)
 				return True
 			
 			else:
@@ -172,7 +178,7 @@ BobPersonalRecPrivs.TypeOfData = personalRecords
 
 BobEHRPrivs = Privs.Priviledge()
 BobEHRPrivs.read = True
-BobEHRPrivs.write = False
+BobEHRPrivs.write = True
 BobEHRPrivs.TypeOfData = earningHistoryRecords
 
 BobAct = Activity.Activity()
@@ -229,6 +235,8 @@ record.freqAccess = 9
 record.DataType = personalRecords
 record.ownerList.append(Bob)
 record.managerList.append(Alice)
+record.stakeHolderList.append(Bob)
+
 
 record2 = DataEntry.DataEntry()
 record2.sen = 6
@@ -240,6 +248,7 @@ record2.ReviewTime = 0
 record2.freqAccess = 5
 record2.DataType = earningHistoryRecords
 record2.ownerList.append(Bob)
+record2.stakeHolderList.append(Alice)
 
 record3 = DataEntry.DataEntry()
 record3.sen = 1
@@ -251,6 +260,8 @@ record3.ReviewTime = 0
 record3.freqAccess = 5
 record3.DataType = earningHistoryRecords
 record3.ownerList.append(Bob)
+record3.stakeHolderList.append(Eve)
+record3.stakeHolderList.append(Bob)
 
 record4 = DataEntry.DataEntry()
 record4.sen = 4
@@ -262,13 +273,14 @@ record4.ReviewTime = 199
 record4.freqAccess = 8
 record4.DataType = earningHistoryRecords
 record4.ownerList.append(Eve)
+record4.stakeHolderList.append(Alice)
 
 recordNames = {"record": record, "record2":record2, "record3":record3, "record4":record4}
 
 txnBuffer = []
 chain = []
 
-state = {"Alice":[0,0], "Bob":[0,0], "Eve":[0,0]}
+state = {"Alice":[16,16], "Bob":[0,0], "Eve":[0,0]}
 
 for i in range(0, 20):
 	txnBuffer.append( [ Alice, time.time(), record, "r"])
@@ -311,10 +323,9 @@ for item in chain:
 txnList = []
 
 print("usage: Username (r/w) dataEntryName")
-print("output:Success/Failure(reason)")
 cont = True
 while cont:
-	msg = input("Give me teh inputz:")
+	msg = input("Give some input:")
 	if msg == "":
 		continue
 	if msg == "quit":
